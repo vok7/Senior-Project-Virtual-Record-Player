@@ -15,7 +15,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 # --- Configuration ---
 # Replace these with your actual values
-ACCESS_TOKEN = "BQBTF9HnArLfj8JP_prKlfuDDE4RtEhNZ4urSjWmNHAt3Hir9Y3dxRvV2HWVqUo1C6x9izVpaqHhLe6fuXo1S43LIwIYfP9sVPccyzrUijGGf2QwbDNj9M_K8YgqoqsEki6bN4L2emDfGICgsBzqxhWxcuLKRqKIRH6Xe-xPYVWvUCcAmXQGueiZMatCzq_BvRPl1o0Dk4ufl5_sbjmRBbgk1NPG"
+ACCESS_TOKEN = "BQCfLXVwJmsu9g9tkFxgEEg3OWoGHJdRGII7wz1GykF0HngiaSL-nWZESUT3hc3NFbccr4vmmw_6inMjfZAurcII5G0ux4HYp9iZhpjWTWw71jRo7lKCe5OitpgJ_yfqY1fJ9tJk_kMH8A45YieKx4dySEDcXlKP5rf9lZ9CgQ-ML-mITgMzN7XiKyhkQ5EJ-sXNh1sBGppyikzFMuVUwboK572p"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
 
 # --- Initialize Spotify Client ---
@@ -26,8 +26,23 @@ RFID_TO_SPOTIFY = {
     '115,117,158,34,186': {
         'track_uri': 'spotify:track:2X485T9Z5Ly0xyaghN73ed'
     },
-    # Add additional RFID-to-track mappings here
+    '211,99,123,49,250': {
+        'track_uri': 'spotify:track:5hmv0zcBcIX8OIVG98imHa'
+    },
+    '211,237,26,50,22': {
+        'track_uri': 'spotify:track:2KnMG7ROpc76hMKobBiocK'
+    },
+    '162,71,184,3,94': {
+        'playlist_uri': 'spotify:playlist:1OO2Fp9PsnaayiekeXuGJX'
+    },
+    '203,81,184,3,33': {
+        'track_uri': 'spotify:track:6vuPZX9fWESg5js2JFTQRJ'
+    },
+    '185,28,185,3,31': {
+        'track_uri': 'spotify:track:5TRPicyLGbAF2LGBFbHGvO'
+    }
 }
+
 
 # --- Initialize MFRC522 (RFID Reader) ---
 continue_reading = True
@@ -80,5 +95,4 @@ def main():
         sleep(0.5)
 
 if __name__ == "__main__":
-    main()
-
+    main() 
