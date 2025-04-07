@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+from #!/usr/bin/env python3
 import sys
 import signal
 import subprocess
@@ -15,7 +15,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 # --- Configuration ---
 # Replace these with your actual values
-ACCESS_TOKEN = "BQCfLXVwJmsu9g9tkFxgEEg3OWoGHJdRGII7wz1GykF0HngiaSL-nWZESUT3hc3NFbccr4vmmw_6inMjfZAurcII5G0ux4HYp9iZhpjWTWw71jRo7lKCe5OitpgJ_yfqY1fJ9tJk_kMH8A45YieKx4dySEDcXlKP5rf9lZ9CgQ-ML-mITgMzN7XiKyhkQ5EJ-sXNh1sBGppyikzFMuVUwboK572p"
+ACCESS_TOKEN = "BQAkXwBq71nOC789Qs9CKAYJmWAZ3vrivMXliMAYljG0fa-e2jcHnvKLgtREnNSG7-sD6ysFxxs4c3Jhz_Ifme9QIXJM2N3LjEv4LVP3tg8KQO1k4XeEhvLmE-QZ4QgntzCd61E7OPxiNtel_yTWPsulTGEFg4cctzfo1tj-bEey2UJvOfiVDH94bB63RSCwtkW20LuRbS_256ICFIBwsiQ2KZIl"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
 
 # --- Initialize Spotify Client ---
@@ -44,7 +44,6 @@ RFID_TO_SPOTIFY = {
 }
 
 
-
 # --- Initialize MFRC522 (RFID Reader) ---
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
@@ -59,10 +58,11 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 
 # --- Function to Play Media on Spotify ---
-def play_media(uri):
+def play_media(media_uri):
+    """Starts playback of the given Spotify track URI on the specified device."""
     try:
-        sp.start_playback(device_id=DEVICE_ID, uris=[uri])
-        print(f"🎶 Now playing: {uri}")
+        sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
+        print(f"🎶 Now playing: {media_uri}")
     except Exception as e:
         print(f"⚠️ Error playing media: {e}")
 
@@ -82,11 +82,7 @@ def main():
                     track_info = RFID_TO_SPOTIFY[card_id]
                     if 'track_uri' in track_info:
                         print(f"🎶 Playing track: {track_info['track_uri']}")
-                            play_media(track_info['track_uri'])
-                            elif 'playlist_uri' in track_info:
-                                print(f"🎶 Playing playlist: {track_info['playlist_uri']}")
-                                play_media(track_info['playlist_uri'])
-
+                        play_media(track_info['track_uri'])
                     sleep(2)  # Delay to prevent rapid re-triggering
                     last_card_status = True
                 else:
@@ -99,11 +95,4 @@ def main():
         sleep(0.5)
 
 if __name__ == "__main__":
-    main()    File "/home/kungfukenneth/Documents/Senior-Project-Virtual-Record-Player/player.py", line 78
-    play_media(track_info['track_uri'])
-IndentationError: unexpected indent
-
-
-------------------
-(program exited with code: 1)
-Press return to continue
+    main()  can i add a feature which allows user to play a playlist and album
