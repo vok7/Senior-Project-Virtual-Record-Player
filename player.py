@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+from #!/usr/bin/env python3
 import sys
 import signal
 import subprocess
@@ -95,4 +95,4 @@ def main():
         sleep(0.5)
 
 if __name__ == "__main__":
-    main() 
+    main()  can i add a feature which allows user to play a playlist and album
