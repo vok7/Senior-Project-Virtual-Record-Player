@@ -51,7 +51,7 @@ MIFAREReader = MFRC522.MFRC522()
 # --- Signal Handler for Cleanup ---
 def end_read(signal, frame):
     global continue_reading
-    print("\n🛑 Stopped by user.")
+    print("\n Stopped by user.")
     continue_reading = False
     GPIO.cleanup()
 
@@ -64,7 +64,7 @@ def play_media(media_uri):
         sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
         print(f"🎶 Now playing: {media_uri}")
     except Exception as e:
-        print(f"⚠️ Error playing media: {e}")
+        print(f"⚠ Error playing media: {e}")
 
 # --- Main Loop ---
 def main():
@@ -73,24 +73,24 @@ def main():
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
         if status == MIFAREReader.MI_OK:
-            print("✅ Card detected!")
+            print(" Card detected!")
             status, uid = MIFAREReader.MFRC522_Anticoll()
             if status == MIFAREReader.MI_OK:
                 card_id = ','.join(map(str, uid))
-                print(f"✅ Card UID: {card_id}")
+                print(f" Card UID: {card_id}")
                 if card_id in RFID_TO_SPOTIFY:
                     track_info = RFID_TO_SPOTIFY[card_id]
                     if 'track_uri' in track_info:
-                        print(f"🎶 Playing track: {track_info['track_uri']}")
+                        print(f" Playing track: {track_info['track_uri']}")
                         play_media(track_info['track_uri'])
                     sleep(2)  # Delay to prevent rapid re-triggering
                     last_card_status = True
                 else:
-                    print("❌ Card not recognized. Update your mapping.")
+                    print(" Card not recognized. Update your mapping.")
                     last_card_status = True
         else:
             if last_card_status:
-                print("🔍 No card detected. Try again.")
+                print(" No card detected. Try again.")
                 last_card_status = False
         sleep(0.5)
 
