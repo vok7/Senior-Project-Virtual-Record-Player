@@ -15,7 +15,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 # --- Configuration ---
 # Replace these with your actual values
-ACCESS_TOKEN = "BQCfLXVwJmsu9g9tkFxgEEg3OWoGHJdRGII7wz1GykF0HngiaSL-nWZESUT3hc3NFbccr4vmmw_6inMjfZAurcII5G0ux4HYp9iZhpjWTWw71jRo7lKCe5OitpgJ_yfqY1fJ9tJk_kMH8A45YieKx4dySEDcXlKP5rf9lZ9CgQ-ML-mITgMzN7XiKyhkQ5EJ-sXNh1sBGppyikzFMuVUwboK572p"
+ACCESS_TOKEN = "BQAkXwBq71nOC789Qs9CKAYJmWAZ3vrivMXliMAYljG0fa-e2jcHnvKLgtREnNSG7-sD6ysFxxs4c3Jhz_Ifme9QIXJM2N3LjEv4LVP3tg8KQO1k4XeEhvLmE-QZ4QgntzCd61E7OPxiNtel_yTWPsulTGEFg4cctzfo1tj-bEey2UJvOfiVDH94bB63RSCwtkW20LuRbS_256ICFIBwsiQ2KZIl"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
 
 # --- Initialize Spotify Client ---
