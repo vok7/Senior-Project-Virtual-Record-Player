@@ -7,7 +7,7 @@ import urllib.parse
 
 # Replace with your actual credentials
 CLIENT_ID = "7e96667b625548f88b3ae7ea6fb13481"
-CLIENT_SECRET = "55583bca92a842b9b9bb79200a1f9f04"
+CLIENT_SECRET = "285db6e53ebc47998c9d10502d7ff41a"
 REDIRECT_URI = "http://localhost:8080"
 SCOPE = "user-read-playback-state,user-modify-playback-state"
 
