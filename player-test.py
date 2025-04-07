@@ -1,19 +1,11 @@
-import RPi.GPIO as GPIO
 import signal
 from time import sleep
 import spotipy
-import MFRC522
-
-# --- GPIO Setup ---
-GPIO.setmode(GPIO.BOARD)  # or GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+import MFRC522_gpiod as MFRC522  # You'll need a modified version of MFRC522 that uses gpiod
 
 # --- Configuration ---
 ACCESS_TOKEN = "BQBzVwLUTbARK98FVfpodkGfUWPA2Q51_YMz9BFicqqkFwNJrzSRaTIQos9dN-Km7ANLGuUjYDZeaNFt6v_MR5gtWVhK7rfj0Bj4pVGEi-6OoQEdu_ZDuVAyzJHrrP2UthW3mEU401Hp9u-fUDl8HsZQ-RSXgZ5eAhCVavt05KuXekm7EfiN7vbxp-E1AsEvB6wOM0SDEnI2gsk-xt7tKc5zUehD"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
-
-# --- Initialize Spotify Client ---
-sp = spotipy.Spotify(auth=ACCESS_TOKEN)
 
 # --- RFID to Spotify Mapping ---
 RFID_TO_SPOTIFY = {
@@ -37,6 +29,9 @@ RFID_TO_SPOTIFY = {
     }
 }
 
+# --- Initialize Spotify Client ---
+sp = spotipy.Spotify(auth=ACCESS_TOKEN)
+
 # --- Initialize MFRC522 (RFID Reader) ---
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
@@ -46,7 +41,7 @@ def end_read(signal, frame):
     global continue_reading
     print("\n🛑 Stopped by user.")
     continue_reading = False
-    GPIO.cleanup()
+    MIFAREReader.cleanup()  # Cleanup gpiod resources
 
 signal.signal(signal.SIGINT, end_read)
 
