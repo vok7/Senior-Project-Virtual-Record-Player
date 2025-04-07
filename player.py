@@ -1,85 +1,82 @@
 #!/usr/bin/env python3
-
 import sys
-import RPi.GPIO as GPIO
 import signal
-from time import sleep
 import subprocess
+from time import sleep
 
-# === RFID to Spotify Map ===
+# Import GPIO and MFRC522
+import RPi.GPIO as GPIO
+sys.path.append("./mfrc522")  # Ensure the MFRC522 module is in your path
+import MFRC522
+
+# Import Spotipy for Spotify control
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+# --- Configuration ---
+# Replace these with your actual values
+ACCESS_TOKEN = "BQBTF9HnArLfj8JP_prKlfuDDE4RtEhNZ4urSjWmNHAt3Hir9Y3dxRvV2HWVqUo1C6x9izVpaqHhLe6fuXo1S43LIwIYfP9sVPccyzrUijGGf2QwbDNj9M_K8YgqoqsEki6bN4L2emDfGICgsBzqxhWxcuLKRqKIRH6Xe-xPYVWvUCcAmXQGueiZMatCzq_BvRPl1o0Dk4ufl5_sbjmRBbgk1NPG"
+DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
+
+# --- Initialize Spotify Client ---
+sp = spotipy.Spotify(auth=ACCESS_TOKEN)
+
+# --- RFID to Spotify Mapping ---
 RFID_TO_SPOTIFY = {
     '115,117,158,34,186': {
         'track_uri': 'spotify:track:2X485T9Z5Ly0xyaghN73ed'
     },
-    # You can add more cards and mappings here as needed
+    # Add additional RFID-to-track mappings here
 }
 
-# === RFID Reader Setup ===
-sys.path.append("./mfrc522")  # Ensure the MFRC522 module is included
-import MFRC522
-
+# --- Initialize MFRC522 (RFID Reader) ---
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 
-# Handle Ctrl+C gracefully to stop reading
+# --- Signal Handler for Cleanup ---
 def end_read(signal, frame):
     global continue_reading
     print("\n🛑 Stopped by user.")
     continue_reading = False
     GPIO.cleanup()
 
-# Capture SIGINT for cleanup
 signal.signal(signal.SIGINT, end_read)
 
-# Function to play media using Raspotify (Spotify Connect)
+# --- Function to Play Media on Spotify ---
 def play_media(media_uri):
-    """Plays track using Raspotify."""
-    # Construct the command to play using Spotify Connect (via Raspotify)
-    # Use the `dbus` method to control Spotify Connect since we are using Raspotify
-    command = f"dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+    """Starts playback of the given Spotify track URI on the specified device."""
     try:
-        # Execute the command to play the selected media via Raspotify
-        subprocess.run(command, shell=True, check=True)
+        sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
         print(f"🎶 Now playing: {media_uri}")
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         print(f"⚠️ Error playing media: {e}")
 
+# --- Main Loop ---
 def main():
-    """Main function to read RFID and trigger Raspotify actions."""
     print("📡 Waiting for you to scan an RFID sticker/card...")
-    
-    last_card_status = False  # To track if the card status changed
+    last_card_status = False  # Track if a card was detected last time
     while continue_reading:
-        # Scan for RFID cards
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-
         if status == MIFAREReader.MI_OK:
             print("✅ Card detected!")
-
-            # Get the UID of the card
             status, uid = MIFAREReader.MFRC522_Anticoll()
-
             if status == MIFAREReader.MI_OK:
-                card_id = ','.join(map(str, uid))  # Format UID as a string
-                print(f"✅ Card detected! UID: {card_id}")
-
-                # If the card ID is in the dictionary, play the media
+                card_id = ','.join(map(str, uid))
+                print(f"✅ Card UID: {card_id}")
                 if card_id in RFID_TO_SPOTIFY:
-                    media = RFID_TO_SPOTIFY[card_id]
-                    if 'track_uri' in media:
-                        print(f"🎶 Playing track: {media['track_uri']}")
-                        play_media(media['track_uri'])
-                    sleep(2)  # Short delay before next scan
-                    last_card_status = True  # Card is now detected
+                    track_info = RFID_TO_SPOTIFY[card_id]
+                    if 'track_uri' in track_info:
+                        print(f"🎶 Playing track: {track_info['track_uri']}")
+                        play_media(track_info['track_uri'])
+                    sleep(2)  # Delay to prevent rapid re-triggering
+                    last_card_status = True
                 else:
-                    print("❌ Card not recognized. Try again or update your dictionary.")
+                    print("❌ Card not recognized. Update your mapping.")
                     last_card_status = True
         else:
-            # Only print the "No card detected" message if the last status was a detected card
             if last_card_status:
                 print("🔍 No card detected. Try again.")
-                last_card_status = False  # Reset status
-        # Sleep to reduce spamming
+                last_card_status = False
         sleep(0.5)
 
 if __name__ == "__main__":
