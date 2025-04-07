@@ -1,12 +1,8 @@
-import RPi.GPIO as GPIO
-import signal
+from gpiozero import OutputDevice
+from signal import signal, SIGINT
 from time import sleep
 import spotipy
-import MFRC522
-
-# --- GPIO Setup ---
-GPIO.setmode(GPIO.BOARD)  # or GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+import MFRC522_gpiozero as MFRC522  # We'll need a modified MFRC522 library
 
 # --- Configuration ---
 ACCESS_TOKEN = "BQBzVwLUTbARK98FVfpodkGfUWPA2Q51_YMz9BFicqqkFwNJrzSRaTIQos9dN-Km7ANLGuUjYDZeaNFt6v_MR5gtWVhK7rfj0Bj4pVGEi-6OoQEdu_ZDuVAyzJHrrP2UthW3mEU401Hp9u-fUDl8HsZQ-RSXgZ5eAhCVavt05KuXekm7EfiN7vbxp-E1AsEvB6wOM0SDEnI2gsk-xt7tKc5zUehD"
@@ -46,9 +42,9 @@ def end_read(signal, frame):
     global continue_reading
     print("\n🛑 Stopped by user.")
     continue_reading = False
-    GPIO.cleanup()
+    MIFAREReader.cleanup()  # Use the GPIO Zero cleanup method
 
-signal.signal(signal.SIGINT, end_read)
+signal(SIGINT, end_read)
 
 # --- Function to Play Media on Spotify ---
 def play_media(media_uri):
