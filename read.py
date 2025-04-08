@@ -23,7 +23,7 @@ continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 last_card_status = False
 
-# --- Signal Handler ---
+# Signal Handler
 def end_read(signal, frame):
     global continue_reading
     print("\n🛑 Stopped by user.")
@@ -32,7 +32,7 @@ def end_read(signal, frame):
 
 signal.signal(signal.SIGINT, end_read)
 
-# --- Function to Play Media for a Specific Card ---
+# Function to Play Media for a Specific Card
 def play_media_for_card(card_id):
     """If a specific RFID card is detected, play the corresponding track."""
     if card_id == '115,117,158,34,186':
@@ -43,7 +43,7 @@ def play_media_for_card(card_id):
         except Exception as e:
             print(f"⚠️ Error playing media: {e}")
 
-# --- Main Loop ---
+# Main Loop
 def main():
     global last_card_status
     print("📡 Waiting for you to scan an RFID sticker/card...")
