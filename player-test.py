@@ -2,16 +2,16 @@ from gpiozero import OutputDevice
 from signal import signal, SIGINT
 from time import sleep
 import spotipy
-import MFRC522_gpiozero as MFRC522  # We'll need a modified MFRC522 library
+import MFRC522_gpiozero as MFRC522  
 
-# --- Configuration ---
+#Configuration
 ACCESS_TOKEN = "BQBzVwLUTbARK98FVfpodkGfUWPA2Q51_YMz9BFicqqkFwNJrzSRaTIQos9dN-Km7ANLGuUjYDZeaNFt6v_MR5gtWVhK7rfj0Bj4pVGEi-6OoQEdu_ZDuVAyzJHrrP2UthW3mEU401Hp9u-fUDl8HsZQ-RSXgZ5eAhCVavt05KuXekm7EfiN7vbxp-E1AsEvB6wOM0SDEnI2gsk-xt7tKc5zUehD"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
 
-# --- Initialize Spotify Client ---
+#Initialize Spotify Client
 sp = spotipy.Spotify(auth=ACCESS_TOKEN)
 
-# --- RFID to Spotify Mapping ---
+#RFID to Spotify Mapping
 RFID_TO_SPOTIFY = {
     '115,117,158,34,186': {
         'track_uri': 'spotify:track:2X485T9Z5Ly0xyaghN73ed'
@@ -33,11 +33,11 @@ RFID_TO_SPOTIFY = {
     }
 }
 
-# --- Initialize MFRC522 (RFID Reader) ---
+#Initialize MFRC522 (RFID Reader)
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 
-# --- Signal Handler for Cleanup ---
+#Signal Handler for Cleanup
 def end_read(signal, frame):
     global continue_reading
     print("\n Stopped by user.")
@@ -46,7 +46,7 @@ def end_read(signal, frame):
 
 signal(SIGINT, end_read)
 
-# --- Function to Play Media on Spotify ---
+#Function to Play Media on Spotify
 def play_media(media_uri):
     """Starts playback of the given Spotify track URI on the specified device."""
     try:
@@ -55,10 +55,10 @@ def play_media(media_uri):
     except Exception as e:
         print(f"⚠Error playing media: {e}")
 
-# --- Main Loop ---
+#Main Loop
 def main():
     print("Waiting for you to scan an RFID sticker/card...")
-    last_card_status = False  # Track if a card was detected last time
+    last_card_status = False  #Track previous card
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
         if status == MIFAREReader.MI_OK:
@@ -72,7 +72,7 @@ def main():
                     if 'track_uri' in track_info:
                         print(f"Playing track: {track_info['track_uri']}")
                         play_media(track_info['track_uri'])
-                    sleep(2)  # Delay to prevent rapid re-triggering
+                    sleep(2)  # Delay to prevent retriggering
                     last_card_status = True
                 else:
                     print("Card not recognized. Update your mapping.")
