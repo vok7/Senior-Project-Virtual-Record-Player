@@ -19,7 +19,7 @@ sp_oauth = SpotifyOAuth(client_id=CLIENT_ID,
 
 class OAuthHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        # Check if the URL has a 'code' parameter
+        # Check URL 'code' parameter
         query_components = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         if "code" in query_components:
             code = query_components["code"][0]
@@ -28,7 +28,7 @@ class OAuthHandler(http.server.BaseHTTPRequestHandler):
                 token_info = sp_oauth.get_access_token(code, as_dict=True)
                 access_token = token_info["access_token"]
                 print(f"Access Token: {access_token}")
-                # Respond to the browser
+                # Respond to browser
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
@@ -43,7 +43,7 @@ def run_server():
     handler = OAuthHandler
     with socketserver.TCPServer(("localhost", 8080), handler) as httpd:
         print("Serving at port 8080...")
-        httpd.handle_request()  # handle one request then exit
+        httpd.handle_request()  # handle requesr then exit
 
 def main():
     auth_url = sp_oauth.get_authorize_url()
