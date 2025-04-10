@@ -68,9 +68,9 @@ def play_media(media_uri):
             sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
         else:
             sp.start_playback(device_id=DEVICE_ID, context_uri=media_uri)
-        print(f"🎶 Now playing: {media_uri}")
+        print(f"Now playing: {media_uri}")
     except Exception as e:
-        print(f"⚠️ Error playing media: {e}")
+        print(f"Error playing media: {e}")
 
 #Main Loop
 def main():
