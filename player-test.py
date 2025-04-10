@@ -44,13 +44,13 @@ MIFAREReader = MFRC522.MFRC522()
 # --- Signal Handler ---
 def end_read(signal, frame):
     global continue_reading
-    print("\n🛑 Stopped by user.")
+    print("Stopped by user.")
     continue_reading = False
     MIFAREReader.cleanup()
 
 signal(SIGINT, end_read)
 
-# --- Function to Play Media ---
+#Function to Play Media
 def play_media(media_uri):
     try:
         if "track:" in media_uri:
@@ -59,34 +59,34 @@ def play_media(media_uri):
             sp.start_playback(device_id=DEVICE_ID, context_uri=media_uri)
         print(f"🎶 Now playing: {media_uri}")
     except Exception as e:
-        print(f"⚠️ Error playing media: {e}")
+        print(f"Error playing media: {e}")
 
-# --- Main Loop ---
+#Main Loop
 def main():
     print("📡 Waiting for RFID scan...")
     last_card_status = False
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
         if status == MIFAREReader.MI_OK:
-            print("✅ Card detected!")
+            print("Card detected!")
             status, uid = MIFAREReader.MFRC522_Anticoll()
             if status == MIFAREReader.MI_OK:
                 card_id = ','.join(map(str, uid))
-                print(f"✅ UID: {card_id}")
+                print(f"UID: {card_id}")
                 track_info = RFID_TO_SPOTIFY.get(card_id)
                 if track_info:
                     uri = track_info.get("track_uri") or track_info.get("playlist_uri") or track_info.get("album_uri")
                     if uri:
                         play_media(uri)
                     else:
-                        print("⚠️ URI not defined.")
+                        print("URI not defined.")
                 else:
-                    print("❌ Unknown card.")
+                    print("Unknown card.")
                 sleep(2)
                 last_card_status = True
         else:
             if last_card_status:
-                print("🔍 No card detected.")
+                print("No card detected.")
                 last_card_status = False
         sleep(0.5)
 
