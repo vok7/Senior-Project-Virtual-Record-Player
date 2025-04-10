@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from gpiozero import OutputDevice
 from signal import signal, SIGINT
 from time import sleep
@@ -5,7 +6,7 @@ import spotipy
 import MFRC522_gpiozero as MFRC522  
 
 #Configuration
-ACCESS_TOKEN = "BQBzVwLUTbARK98FVfpodkGfUWPA2Q51_YMz9BFicqqkFwNJrzSRaTIQos9dN-Km7ANLGuUjYDZeaNFt6v_MR5gtWVhK7rfj0Bj4pVGEi-6OoQEdu_ZDuVAyzJHrrP2UthW3mEU401Hp9u-fUDl8HsZQ-RSXgZ5eAhCVavt05KuXekm7EfiN7vbxp-E1AsEvB6wOM0SDEnI2gsk-xt7tKc5zUehD"
+ACCESS_TOKEN = "BQCdLenWM76d2raEvqwL3zirxw7VcXrmGi9JxDMjg-eHeaqnIimpiYTlrD5-EA9CqU0IrI-CX_5xl9scVb2G74If1Iurj4tRzgGGipy6yhrsVDHSp64HZnnnGagrAmUx3pi64D51t_SD9uak8HDbZ1-dOzvlEx07ZEyxdC_FuqP0q8JJ6vQMkWeNQeU07ZJjME8wRBsPQ-6FqzMx4KveGpdK4mM-"
 DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
 
 #Initialize Spotify Client
@@ -13,73 +14,79 @@ sp = spotipy.Spotify(auth=ACCESS_TOKEN)
 
 #RFID to Spotify Mapping
 RFID_TO_SPOTIFY = {
-    '115,117,158,34,186': {
-        'track_uri': 'spotify:track:2X485T9Z5Ly0xyaghN73ed'
-    },
-    '211,99,123,49,250': {
-        'track_uri': 'spotify:track:5hmv0zcBcIX8OIVG98imHa'
-    },
-    '211,237,26,50,22': {
-        'track_uri': 'spotify:track:2KnMG7ROpc76hMKobBiocK'
-    },
-    '162,71,184,3,94': {
-        'playlist_uri': 'spotify:playlist:1OO2Fp9PsnaayiekeXuGJX'
-    },
-    '203,81,184,3,33': {
-        'track_uri': 'spotify:track:6vuPZX9fWESg5js2JFTQRJ'
-    },
-    '185,28,185,3,31': {
-        'track_uri': 'spotify:track:5TRPicyLGbAF2LGBFbHGvO'
-    }
+    #Tracks
+    '211,237,26,50,22': {'track_uri': 'spotify:track:2KnMG7ROpc76hMKobBiocK'},
+    '115,117,158,34,186': {'track_uri': 'spotify:track:2X485T9Z5Ly0xyaghN73ed'},
+    '211,99,123,49,250': {'track_uri': 'spotify:track:5hmv0zcBcIX8OIVG98imHa'},
+
+    #Playlists
+    '185,28,185,3,31': {'playlist_uri': 'spotify:playlist:0qu2tGOCixqaV6V0Aym72x'},
+    '203,81,184,3,33': {'playlist_uri': 'spotify:playlist:7KPmjjagSk6VUzVlWDjWTJ'},
+    '162,71,184,3,94': {'playlist_uri': 'spotify:playlist:3v8Fm0PyOMRuQ2rehEvgok'},
+
+    #Albums
+    '154,124,75,246,91': {'album_uri': 'spotify:album:5tXZfxvr2VaWibD74nw8VL'},  # Earth Wind & Fire
+    '42,114,77,246,227': {'album_uri': 'spotify:album:3DGQ1iZ9XKUQxAUWjfC34w'},  # Kendrick Lamar
+    '170,49,75,246,38': {'album_uri': 'spotify:album:34LxHI9x14qXUOS8AWRrYD'},   # De La Soul
+    '106,36,73,246,241': {'album_uri': 'spotify:album:3ywVzrwMQ3Kq43N9zBdBQm'},  # Funkadelic
+    '218,85,73,246,48': {'album_uri': 'spotify:album:7Cw4LObzgnVqSlkuIyywtI'},    # Baby Keem
+    '138,69,75,246,114': {'album_uri': 'spotify:album:6rsQnwaoJHxXJRCDBPkBRw'},  # Arctic Monkeys
+    '26,244,79,246,87': {'album_uri': 'spotify:album:79dL7FLiJFOO0EoehUHQBv'},   # Tame Impala
+    '234,181,77,246,228': {'album_uri': 'spotify:album:6nfJMRoIjyRwk3ZTHNm0PY'}, # Westside Gunn
+    '42,169,79,246,58': {'album_uri': 'spotify:album:1hxraaWEf3wFnJxADf8Dge'},   # Panic at the Disco
+    '26,134,77,246,39': {'album_uri': 'spotify:album:127CLXCibn1ARC1CGExGav'}    # Rufus
 }
 
-#Initialize MFRC522 (RFID Reader)
+# --- Initialize MFRC522 (RFID Reader) ---
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 
-#Signal Handler for Cleanup
+# --- Signal Handler ---
 def end_read(signal, frame):
     global continue_reading
-    print("\n Stopped by user.")
+    print("\n🛑 Stopped by user.")
     continue_reading = False
-    MIFAREReader.cleanup()  # Use the GPIO Zero cleanup method
+    MIFAREReader.cleanup()
 
 signal(SIGINT, end_read)
 
-#Function to Play Media on Spotify
+# --- Function to Play Media ---
 def play_media(media_uri):
-    """Starts playback of the given Spotify track URI on the specified device."""
     try:
-        sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
-        print(f"Now playing: {media_uri}")
+        if "track:" in media_uri:
+            sp.start_playback(device_id=DEVICE_ID, uris=[media_uri])
+        else:
+            sp.start_playback(device_id=DEVICE_ID, context_uri=media_uri)
+        print(f"🎶 Now playing: {media_uri}")
     except Exception as e:
-        print(f"⚠Error playing media: {e}")
+        print(f"⚠️ Error playing media: {e}")
 
-#Main Loop
+# --- Main Loop ---
 def main():
-    print("Waiting for you to scan an RFID sticker/card...")
-    last_card_status = False  #Track previous card
+    print("📡 Waiting for RFID scan...")
+    last_card_status = False
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
         if status == MIFAREReader.MI_OK:
-            print("Card detected!")
+            print("✅ Card detected!")
             status, uid = MIFAREReader.MFRC522_Anticoll()
             if status == MIFAREReader.MI_OK:
                 card_id = ','.join(map(str, uid))
-                print(f"Card UID: {card_id}")
-                if card_id in RFID_TO_SPOTIFY:
-                    track_info = RFID_TO_SPOTIFY[card_id]
-                    if 'track_uri' in track_info:
-                        print(f"Playing track: {track_info['track_uri']}")
-                        play_media(track_info['track_uri'])
-                    sleep(2)  # Delay to prevent retriggering
-                    last_card_status = True
+                print(f"✅ UID: {card_id}")
+                track_info = RFID_TO_SPOTIFY.get(card_id)
+                if track_info:
+                    uri = track_info.get("track_uri") or track_info.get("playlist_uri") or track_info.get("album_uri")
+                    if uri:
+                        play_media(uri)
+                    else:
+                        print("⚠️ URI not defined.")
                 else:
-                    print("Card not recognized. Update your mapping.")
-                    last_card_status = True
+                    print("❌ Unknown card.")
+                sleep(2)
+                last_card_status = True
         else:
             if last_card_status:
-                print("No card detected. Try again.")
+                print("🔍 No card detected.")
                 last_card_status = False
         sleep(0.5)
 
