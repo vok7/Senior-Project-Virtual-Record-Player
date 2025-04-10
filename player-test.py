@@ -25,23 +25,23 @@ RFID_TO_SPOTIFY = {
     '162,71,184,3,94': {'playlist_uri': 'spotify:playlist:3v8Fm0PyOMRuQ2rehEvgok'},
 
     #Albums
-    '154,124,75,246,91': {'album_uri': 'spotify:album:5tXZfxvr2VaWibD74nw8VL'},  # Earth Wind & Fire
-    '42,114,77,246,227': {'album_uri': 'spotify:album:3DGQ1iZ9XKUQxAUWjfC34w'},  # Kendrick Lamar
-    '170,49,75,246,38': {'album_uri': 'spotify:album:34LxHI9x14qXUOS8AWRrYD'},   # De La Soul
-    '106,36,73,246,241': {'album_uri': 'spotify:album:3ywVzrwMQ3Kq43N9zBdBQm'},  # Funkadelic
-    '218,85,73,246,48': {'album_uri': 'spotify:album:7Cw4LObzgnVqSlkuIyywtI'},    # Baby Keem
-    '138,69,75,246,114': {'album_uri': 'spotify:album:6rsQnwaoJHxXJRCDBPkBRw'},  # Arctic Monkeys
-    '26,244,79,246,87': {'album_uri': 'spotify:album:79dL7FLiJFOO0EoehUHQBv'},   # Tame Impala
-    '234,181,77,246,228': {'album_uri': 'spotify:album:6nfJMRoIjyRwk3ZTHNm0PY'}, # Westside Gunn
-    '42,169,79,246,58': {'album_uri': 'spotify:album:1hxraaWEf3wFnJxADf8Dge'},   # Panic at the Disco
-    '26,134,77,246,39': {'album_uri': 'spotify:album:127CLXCibn1ARC1CGExGav'}    # Rufus
+    '154,124,75,246,91': {'album_uri': 'spotify:album:5tXZfxvr2VaWibD74nw8VL'},  
+    '42,114,77,246,227': {'album_uri': 'spotify:album:3DGQ1iZ9XKUQxAUWjfC34w'},  
+    '170,49,75,246,38': {'album_uri': 'spotify:album:34LxHI9x14qXUOS8AWRrYD'},   
+    '106,36,73,246,241': {'album_uri': 'spotify:album:3ywVzrwMQ3Kq43N9zBdBQm'},  
+    '218,85,73,246,48': {'album_uri': 'spotify:album:7Cw4LObzgnVqSlkuIyywtI'},    
+    '138,69,75,246,114': {'album_uri': 'spotify:album:6rsQnwaoJHxXJRCDBPkBRw'},  
+    '26,244,79,246,87': {'album_uri': 'spotify:album:79dL7FLiJFOO0EoehUHQBv'},  
+    '234,181,77,246,228': {'album_uri': 'spotify:album:6nfJMRoIjyRwk3ZTHNm0PY'}, 
+    '42,169,79,246,58': {'album_uri': 'spotify:album:1hxraaWEf3wFnJxADf8Dge'},   
+    '26,134,77,246,39': {'album_uri': 'spotify:album:127CLXCibn1ARC1CGExGav'}    
 }
 
-# --- Initialize MFRC522 (RFID Reader) ---
+#Initialize MFRC522
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 
-# --- Signal Handler ---
+#Signal 
 def end_read(signal, frame):
     global continue_reading
     print("Stopped by user.")
@@ -50,7 +50,7 @@ def end_read(signal, frame):
 
 signal(SIGINT, end_read)
 
-#Function to Play Media
+#Play Media
 def play_media(media_uri):
     try:
         if "track:" in media_uri:
@@ -63,7 +63,7 @@ def play_media(media_uri):
 
 #Main Loop
 def main():
-    print("📡 Waiting for RFID scan...")
+    print("Waiting for RFID scan")
     last_card_status = False
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
