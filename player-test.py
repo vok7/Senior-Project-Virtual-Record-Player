@@ -5,12 +5,23 @@ from time import sleep
 import spotipy
 import MFRC522_gpiozero as MFRC522  
 
-#Configuration
-ACCESS_TOKEN = "ACCESS_TOKEN"
-DEVICE_ID = "DEVICE_ID"
+from spotipy.oauth2 import SpotifyOAuth
 
-#Initialize Spotify Client
-sp = spotipy.Spotify(auth=ACCESS_TOKEN)
+# Spotify OAuth Setup
+sp_oauth = SpotifyOAuth(
+    client_id="CLIENT_ID",
+    client_secret="CLIENT_SECRET",
+    redirect_uri="http://127.0.0.1:8008/callback",
+    scope="user-read-playback-state,user-modify-playback-state",
+    cache_path="/home/kungfukenneth/Documents/Senior-Project-Virtual-Record-Player/.cache-spotify",
+    open_browser=False
+)
+
+# Initialize Spotify client with token refresh support
+sp = spotipy.Spotify(auth_manager=sp_oauth)
+
+#Device ID
+DEVICE_ID = "DEVICE_ID"
 
 #RFID to Spotify Mapping
 RFID_TO_SPOTIFY = {
@@ -31,17 +42,17 @@ RFID_TO_SPOTIFY = {
     '106,36,73,246,241': {'album_uri': 'spotify:album:3ywVzrwMQ3Kq43N9zBdBQm'},  
     '218,85,73,246,48': {'album_uri': 'spotify:album:7Cw4LObzgnVqSlkuIyywtI'},    
     '138,69,75,246,114': {'album_uri': 'spotify:album:6rsQnwaoJHxXJRCDBPkBRw'},  
-    '26,244,79,246,87': {'album_uri': 'spotify:album:79dL7FLiJFOO0EoehUHQBv'},  
+    '26,244,79,246,87': {'album_uri': 'spotify:album:79dL7FLiJFOO0EoehUHQBv'},   
     '234,181,77,246,228': {'album_uri': 'spotify:album:6nfJMRoIjyRwk3ZTHNm0PY'}, 
     '42,169,79,246,58': {'album_uri': 'spotify:album:1hxraaWEf3wFnJxADf8Dge'},   
     '26,134,77,246,39': {'album_uri': 'spotify:album:127CLXCibn1ARC1CGExGav'}    
 }
 
-#Initialize MFRC522
+#Initialize MFRC522 (RFID Reader)
 continue_reading = True
 MIFAREReader = MFRC522.MFRC522()
 
-#Signal 
+#Signal Handler
 def end_read(signal, frame):
     global continue_reading
     print("Stopped by user.")
@@ -50,7 +61,7 @@ def end_read(signal, frame):
 
 signal(SIGINT, end_read)
 
-#Play Media
+#Function to Play Media
 def play_media(media_uri):
     try:
         if "track:" in media_uri:
@@ -59,11 +70,11 @@ def play_media(media_uri):
             sp.start_playback(device_id=DEVICE_ID, context_uri=media_uri)
         print(f"🎶 Now playing: {media_uri}")
     except Exception as e:
-        print(f"Error playing media: {e}")
+        print(f"⚠️ Error playing media: {e}")
 
 #Main Loop
 def main():
-    print("Waiting for RFID scan")
+    print("Waiting for RFID scan...")
     last_card_status = False
     while continue_reading:
         status, TagType = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
