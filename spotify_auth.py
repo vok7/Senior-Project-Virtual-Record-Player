@@ -5,13 +5,13 @@ import http.server
 import socketserver
 import urllib.parse
 
-# Replace with your actual credentials
-CLIENT_ID = "7e96667b625548f88b3ae7ea6fb13481"
-CLIENT_SECRET = "285db6e53ebc47998c9d10502d7ff41a"
+#CLIENT CREDENTIALS
+CLIENT_ID = "CLIENT_ID"
+CLIENT_SECRET = "CLIENT_SECRET"
 REDIRECT_URI = "http://localhost:8080"
 SCOPE = "user-read-playback-state,user-modify-playback-state"
 
-# Create an OAuth object for authentication
+#Authentication
 sp_oauth = SpotifyOAuth(client_id=CLIENT_ID,
                          client_secret=CLIENT_SECRET,
                          redirect_uri=REDIRECT_URI,
