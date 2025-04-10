@@ -3,7 +3,7 @@ from gpiozero import OutputDevice
 import spidev
 
 class MFRC522:
-    NRSTPD = 25  # Reset pin (BCM numbering)
+    NRSTPD = 25  
     
     # Constants for MFRC522
     PCD_IDLE = 0x00
