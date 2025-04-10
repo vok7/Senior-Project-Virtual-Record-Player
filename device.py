@@ -2,20 +2,20 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-#Replace these with your actual Spotify Developer credentials:
-CLIENT_ID = "7e96667b625548f88b3ae7ea6fb13481"
-CLIENT_SECRET = "285db6e53ebc47998c9d10502d7ff41a"
+#Spotify Credentials
+CLIENT_ID = "CLIENT_ID"
+CLIENT_SECRET = "CLIENT_SECRET"
 REDIRECT_URI = "http://localhost:8080"
 SCOPE = "user-read-playback-state"
 
-#Initialize the Spotify client with authentication
+#Authentication
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     redirect_uri=REDIRECT_URI,
     scope=SCOPE))
 
-#Retrieve and display available devices
+#Display Avaliable Devices
 devices = sp.devices()
 if devices['devices']:
     for device in devices['devices']:
