@@ -6,8 +6,8 @@ import spotipy
 import MFRC522_gpiozero as MFRC522  
 
 #Configuration
-ACCESS_TOKEN = "BQCdLenWM76d2raEvqwL3zirxw7VcXrmGi9JxDMjg-eHeaqnIimpiYTlrD5-EA9CqU0IrI-CX_5xl9scVb2G74If1Iurj4tRzgGGipy6yhrsVDHSp64HZnnnGagrAmUx3pi64D51t_SD9uak8HDbZ1-dOzvlEx07ZEyxdC_FuqP0q8JJ6vQMkWeNQeU07ZJjME8wRBsPQ-6FqzMx4KveGpdK4mM-"
-DEVICE_ID = "d60f59d15c191935fdf1380f83c608305940281c"
+ACCESS_TOKEN = "ACCESS_TOKEN"
+DEVICE_ID = "DEVICE_ID"
 
 #Initialize Spotify Client
 sp = spotipy.Spotify(auth=ACCESS_TOKEN)
